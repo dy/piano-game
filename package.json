@@ -1,0 +1,53 @@
+{
+  "name": "piano-game",
+  "version": "1.0.0",
+  "description": "Become a better pianist",
+  "main": "index.js",
+  "scripts": {
+    "watch": "watchify -r ./index.js:piano-game -d -o ./test/bundle.js",
+    "build": "browserify -r ./index.js:piano-game -o ./test/bundle.js",
+    "css": "postcss -u postcss-import ./index.css > test/bundle.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "style": "index.css",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dfcreative/piano-game"
+  },
+  "keywords": [
+    "piano",
+    "game"
+  ],
+  "author": "Deema Yvanow <dfcreative@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dfcreative/piano-game/issues"
+  },
+  "homepage": "https://github.com/dfcreative/piano-game",
+  "dependencies": {
+    "array-same": "^1.0.0",
+    "audio-context": "^0.1.0",
+    "midi-qwerty-keys": "0.0.2",
+    "piano-key": "^2.1.0",
+    "piano-keyboard": "^2.1.1",
+    "random-int": "^1.0.0",
+    "same-members": "^1.0.0",
+    "unique-random": "^1.0.0",
+    "vexflow": "^1.2.27",
+    "xtend": "^4.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^5.2.0",
+    "babelify": "^6.2.0",
+    "browserify": "^11.0.1",
+    "postcss": "^5.0.2",
+    "postcss-cli": "^2.0.0",
+    "postcss-import": "^6.2.0",
+    "watchify": "^3.3.1"
+  }
+}
