@@ -107,12 +107,24 @@
 
 .piano-keyboard-key-white {
 	box-sizing: border-box;
-	border-right: 1px solid rgba(127,127,127,.2);
+	border-right: 1px solid rgba(0,0,0,.1);
 	box-shadow: none;
 }
+.piano-keyboard-key-white:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: -1px;
+	height: .5rem;
+	background: linear-gradient(rgba(60,10,0,.4) 5%, rgba(20,0,30,.15) 45%, rgba(0,0,0,0) 95%);
+}
+.piano-keyboard-key-black {
+	background: rgb(40,45,50);
+}
 .piano-keyboard-key-black:after {
-    border-bottom: 1rem solid rgba(233, 231, 220, 0.06);
-    border-left: .2rem solid rgba(255, 249, 245, 0.12);
-    border-right: .2rem solid rgba(230, 236, 241, 0.16);
+    border-bottom: 1rem solid rgba(0, 0, 0, 0.3);
+    border-left: .2rem solid rgba(0, 0, 0, 0.12);
+    border-right: .2rem solid rgba(0, 0, 0, 0.16);
     border-top: none;
 }

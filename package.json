@@ -39,7 +39,6 @@
     "same-members": "^1.0.0",
     "sliced": "^1.0.1",
     "unique-random": "^1.0.0",
-    "vexflow": "^1.2.27",
     "xtend": "^4.0.0"
   },
   "devDependencies": {
