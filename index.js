@@ -37,7 +37,7 @@ class Game extends Emitter {
 		self.keyboard = self.createKeyboard(options.keyboard);
 
 		//reassign own range, cause piano casts it to numbers
-		self.range = self.keyboard.range;
+		self.range = self.range.map(key.getNumber);
 
 		//ask the first question
 		self.question = self.generateQuestion();
@@ -55,26 +55,47 @@ class Game extends Emitter {
 	createStave (options) {
 		var self = this;
 
-		var el = document.createElement('canvas');
+		var el = document.createElement('div');
 		el.className = 'piano-game-stave';
 		self.element.appendChild(el);
 
-		var canvas = el;
+		var canvas = document.createElement('canvas');
+		canvas.className = 'piano-game-stave-canvas';
+		el.appendChild(canvas);
+		canvas.width = 272;
+		canvas.height = 240;
+
+		Vex.Flow.STAVE_LINE_THICKNESS = 1;
+
+		//Create vexflow canvas renderer
 		self.renderer = new Vex.Flow.Renderer(
 			canvas, Vex.Flow.Renderer.Backends.CANVAS);
-
 		var ctx = self.renderer.getContext();
 
-		var style = getComputedStyle(el);
+		//create grand stave
+		var topStave =
+		self.topStave = new Vex.Flow.Stave(0, 28, canvas.width, {
+			fill_style: 'rgba(127,127,127,.5)'
+		});
+		//clean endlines
+		self.topStave.modifiers.length = 0;
+		self.topStave.addClef("treble").setContext(ctx).draw();
 
-		canvas.width = parseInt(style.width);
-		canvas.height = parseInt(style.height);
+		var bottomStave =
+		self.bottomStave = new Vex.Flow.Stave(0, 89, canvas.width, {
+			fill_style: 'rgba(127,127,127,.5)'
+		});
+		self.bottomStave.modifiers.length = 0;
+		self.bottomStave.addClef("bass").setContext(ctx).draw();
 
-		self.staveTreble = new Vex.Flow.Stave(0, 0, canvas.width);
-		self.staveTreble.addClef("treble").setContext(ctx).draw();
+		// var brace = new Vex.Flow.StaveConnector(topStave, bottomStave).setType(3); // 3 = brace
 
-		self.staveBass = new Vex.Flow.Stave(0, 80, canvas.width);
-		self.staveBass.addClef("bass").setContext(ctx).draw();
+		// var lineRight = new Vex.Flow.StaveConnector(topStave, bottomStave).setType(0);
+		// var lineLeft = new Vex.Flow.StaveConnector(topStave, bottomStave).setType(1);
+
+		// brace.setContext(ctx).draw();
+		// lineRight.setContext(ctx).draw();
+		// lineLeft.setContext(ctx).draw();
 
 		return canvas;
 	}
@@ -96,7 +117,7 @@ class Game extends Emitter {
 
 		// get options
 		options = extend({
-			range: self.range,
+			range: ['c4', 'c5'],
 			element: el
 		}, options);
 
@@ -174,28 +195,32 @@ class Game extends Emitter {
 
 		//generate vex notes from question notes
 		var vexNotes = [];
-		var vexKeys = [];
 
-		for (var i = 0; i < question.notes.length; i++) {
-			var note = question.notes[i];
-			var noteName = key.getNote(note);
-			var noteOctave = key.getOctave(note);
-
-			vexKeys.push(noteName + '/' + noteOctave);
-		}
+		//FIXME: generate proper chords
+		var note = 39//question.notes[0];
+		var noteName = key.getNote(note);
+		var noteOctave = key.getOctave(note);
+		var noteClef = note > key.getNumber('c4') ? 'treble' : 'bass';
 
 		vexNotes.push(new Vex.Flow.StaveNote({
-			keys: vexKeys,
-			duration: 'w'
+			keys: [noteName + '/' + noteOctave],
+			duration: 'w',
+			align_center: true,
+			clef: noteClef
 		}));
 
-		// Add notes to voice
 		voice.addTickables(vexNotes);
 
-		// Format and justify the notes to 500 pixels
-		var formatter = new Vex.Flow.Formatter().format([voice], self.stave.width);
+		//Aliging by center is a kinda tricky in vexflow
+		var offset = 90;
+		var formatter = new Vex.Flow.Formatter().format([voice], self.stave.width - offset, {
+		});
 
-		voice.draw(ctx, self.staveTreble);
+		//Choose proper stave
+		var stave = noteClef === 'treble' ? self.topStave : self.bottomStave;
+
+		//render a note
+		voice.draw(ctx, stave);
 
 		return self;
 	}

@@ -4,15 +4,42 @@
 .piano-game {
 	position: relative;
 	width: 100%;
-	height: 600px;
+	min-height: 320px;
+	box-sizing: border-box;
 }
 
 .piano-game-stave {
 	width: 100%;
-	height: 50%;
+	/* This ratio keeps the rect formed by staves/keys centered */
+	height: 53%;
+	display: block;
+	position: relative;
+}
+
+.piano-game-stave-canvas {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
 }
 
 .piano-game-keyboard {
+	box-sizing: border-box;
+	border-top: 3px solid rgb(185,0,0);
 	width: 100%;
-	height: 50%;
+	height: 47%;
+}
+
+.piano-keyboard-key-white {
+	box-sizing: border-box;
+	border-right: 1px solid rgba(127,127,127,.2);
+	box-shadow: none;
+}
+.piano-keyboard-key-black:after {
+    border-bottom: 1rem solid rgba(233, 231, 220, 0.06);
+    border-left: .2rem solid rgba(255, 249, 245, 0.12);
+    border-right: .2rem solid rgba(230, 236, 241, 0.16);
+    border-top: none;
 }
