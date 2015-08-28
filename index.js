@@ -1,12 +1,12 @@
 import Emitter from 'events';
 import Keyboard from 'piano-keyboard';
 import extend from 'xtend/mutable';
-import Vex from 'vexflow';
 import audioContext from 'audio-context';
 import sameMembers from 'same-members';
 import qwertyStream from 'midi-qwerty-keys';
 import uniqRandom from 'unique-random';
 import key from 'piano-key';
+import slice from 'sliced';
 
 
 /**
@@ -37,7 +37,7 @@ class Game extends Emitter {
 		self.keyboard = self.createKeyboard(options.keyboard);
 
 		//reassign own range, cause piano casts it to numbers
-		self.range = self.range.map(key.getNumber);
+		// self.range = self.range.map(key.getNumber);
 
 		//ask the first question
 		self.question = self.generateQuestion();
@@ -56,48 +56,57 @@ class Game extends Emitter {
 		var self = this;
 
 		var el = document.createElement('div');
-		el.className = 'piano-game-stave';
+		el.className = 'piano-game-score';
+
+		el.innerHTML = `
+			<div class="piano-game-stave">
+				<ul class="piano-game-lines">
+					<li class="piano-game-space piano-game-gap" data-space="57"></li>
+					<li class="piano-game-space piano-game-ledger" data-space="56" data-ledger></li>
+					<li class="piano-game-space piano-game-gap" data-space="55"></li>
+					<li class="piano-game-space piano-game-ledger" data-space="54" data-ledger></li>
+					<li class="piano-game-space piano-game-gap" data-space="53"></li>
+					<li class="piano-game-space piano-game-ledger" data-space="52" data-ledger></li>
+					<li class="piano-game-space piano-game-gap" data-space="51"></li>
+					<li class="piano-game-space piano-game-line" data-space="50"></li>
+					<li class="piano-game-space piano-game-gap" data-space="49"></li>
+					<li class="piano-game-space piano-game-line" data-space="48"></li>
+					<li class="piano-game-space piano-game-gap" data-space="47"></li>
+					<li class="piano-game-space piano-game-line" data-space="46"></li>
+					<li class="piano-game-space piano-game-gap" data-space="45"></li>
+					<li class="piano-game-space piano-game-line" data-space="44"></li>
+					<li class="piano-game-space piano-game-gap" data-space="43"></li>
+					<li class="piano-game-space piano-game-line" data-space="42"></li>
+					<li class="piano-game-space piano-game-gap" data-space="41"></li>
+					<li class="piano-game-space piano-game-ledger" data-space="40" data-ledger><span class="piano-game-note" data-note>&#x1D15D</span></li>
+					<li class="piano-game-space piano-game-gap" data-space="39"></li>
+					<li class="piano-game-space piano-game-line" data-space="38"></li>
+					<li class="piano-game-space piano-game-gap" data-space="37"></li>
+					<li class="piano-game-space piano-game-line" data-space="36"></li>
+					<li class="piano-game-space piano-game-gap" data-space="35"></li>
+					<li class="piano-game-space piano-game-line" data-space="34"></li>
+					<li class="piano-game-space piano-game-gap" data-space="33"></li>
+					<li class="piano-game-space piano-game-line" data-space="32"></li>
+					<li class="piano-game-space piano-game-gap" data-space="31"></li>
+					<li class="piano-game-space piano-game-line" data-space="30"></li>
+					<li class="piano-game-space piano-game-gap" data-space="29"></li>
+					<li class="piano-game-space piano-game-ledger" data-space="28" data-ledger></li>
+					<li class="piano-game-space piano-game-gap" data-space="27"></li>
+					<li class="piano-game-space piano-game-ledger" data-space="26" data-ledger></li>
+					<li class="piano-game-space piano-game-gap" data-space="25"></li>
+					<li class="piano-game-space piano-game-ledger" data-space="24" data-ledger></li>
+					<li class="piano-game-space piano-game-gap" data-space="23"></li>
+				</ul>
+				<span class="piano-game-clef piano-game-clef-treble">&#x1D11E;</span>
+				<span class="piano-game-clef piano-game-clef-bass">&#x1D122;</span>
+			</div>
+		`;
+
+		self.noteElement = el.querySelector('[data-note]');
+
 		self.element.appendChild(el);
 
-		var canvas = document.createElement('canvas');
-		canvas.className = 'piano-game-stave-canvas';
-		el.appendChild(canvas);
-		canvas.width = 272;
-		canvas.height = 240;
-
-		Vex.Flow.STAVE_LINE_THICKNESS = 1;
-
-		//Create vexflow canvas renderer
-		self.renderer = new Vex.Flow.Renderer(
-			canvas, Vex.Flow.Renderer.Backends.CANVAS);
-		var ctx = self.renderer.getContext();
-
-		//create grand stave
-		var topStave =
-		self.topStave = new Vex.Flow.Stave(0, 28, canvas.width, {
-			fill_style: 'rgba(127,127,127,.5)'
-		});
-		//clean endlines
-		self.topStave.modifiers.length = 0;
-		self.topStave.addClef("treble").setContext(ctx).draw();
-
-		var bottomStave =
-		self.bottomStave = new Vex.Flow.Stave(0, 89, canvas.width, {
-			fill_style: 'rgba(127,127,127,.5)'
-		});
-		self.bottomStave.modifiers.length = 0;
-		self.bottomStave.addClef("bass").setContext(ctx).draw();
-
-		// var brace = new Vex.Flow.StaveConnector(topStave, bottomStave).setType(3); // 3 = brace
-
-		// var lineRight = new Vex.Flow.StaveConnector(topStave, bottomStave).setType(0);
-		// var lineLeft = new Vex.Flow.StaveConnector(topStave, bottomStave).setType(1);
-
-		// brace.setContext(ctx).draw();
-		// lineRight.setContext(ctx).draw();
-		// lineLeft.setContext(ctx).draw();
-
-		return canvas;
+		return el;
 	}
 
 
@@ -182,45 +191,44 @@ class Game extends Emitter {
 
 		self.clearAnswerIndication();
 
-		//get ctx
-		var ctx = self.renderer.getContext();
+		//TODO: generate proper chords
+		self.showNotes(question.notes)
 
-		// Create a voice in 4/4
-		var voice = new Vex.Flow.Voice({
-			num_beats: 4,
-			beat_value: 4,
-			resolution: Vex.Flow.RESOLUTION
+		return self;
+	}
+
+
+	/**
+	 * Expose note[s] on a stave
+	 */
+	showNotes (notes) {
+		var self = this;
+
+		var note = notes[0];
+
+		var noteSpace = self.stave.querySelector('[data-space="' + note + '"]');
+		noteSpace.appendChild(self.noteElement);
+
+		//hide all ledger lines
+		slice(self.stave.querySelectorAll('[data-ledger]')).forEach(function (ledger) {
+			ledger.classList.remove('piano-game-ledger-visible');
 		});
 
-
-		//generate vex notes from question notes
-		var vexNotes = [];
-
-		//FIXME: generate proper chords
-		var note = 39//question.notes[0];
-		var noteName = key.getNote(note);
-		var noteOctave = key.getOctave(note);
-		var noteClef = note > key.getNumber('c4') ? 'treble' : 'bass';
-
-		vexNotes.push(new Vex.Flow.StaveNote({
-			keys: [noteName + '/' + noteOctave],
-			duration: 'w',
-			align_center: true,
-			clef: noteClef
-		}));
-
-		voice.addTickables(vexNotes);
-
-		//Aliging by center is a kinda tricky in vexflow
-		var offset = 90;
-		var formatter = new Vex.Flow.Formatter().format([voice], self.stave.width - offset, {
-		});
-
-		//Choose proper stave
-		var stave = noteClef === 'treble' ? self.topStave : self.bottomStave;
-
-		//render a note
-		voice.draw(ctx, stave);
+		//show ledger lines
+		if (note > 50) {
+			for ( var i = 50; i <= note; i +=2) {
+				self.stave.querySelector('[data-space="' + i + '"]').classList.add('piano-game-ledger-visible');
+			}
+		}
+		else if (note <= 28) {
+			for ( var i = 28; i >= note; i -=2) {
+				self.stave.querySelector('[data-space="' + i + '"]').classList.add('piano-game-ledger-visible');
+			}
+		}
+		else if (note === 40) {
+			self.stave.querySelector('[data-space="40"]').classList.add('piano-game-ledger-visible');
+		}
+		console.log(note)
 
 		return self;
 	}
@@ -337,7 +345,7 @@ Game.prototype.maxNotes = 3;
 
 
 /** Default range to generate notes between */
-Game.prototype.range = ['c3', 'c5'];
+Game.prototype.range = [23, 57];
 
 
 export default Game;

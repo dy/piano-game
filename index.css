@@ -1,5 +1,17 @@
 @import 'node_modules/piano-keyboard/index.css';
 
+@font-face {
+	font-family: 'Bravura';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Bravura'),
+		url('./font/Bravura.otf') format('otf'),
+		url('./font/Bravura.eot') format('eot'),
+		url('./font/Bravura.woff') format('woff'),
+		url('./font/Bravura.svg') format('svg');
+	unicode-range:U+E000-1D1FF;
+}
+
 
 .piano-game {
 	position: relative;
@@ -8,22 +20,83 @@
 	box-sizing: border-box;
 }
 
-.piano-game-stave {
+.piano-game-score {
 	width: 100%;
 	/* This ratio keeps the rect formed by staves/keys centered */
 	height: 53%;
 	display: block;
 	position: relative;
 }
-
-.piano-game-stave-canvas {
+.piano-game-stave {
 	position: absolute;
-	left: 0;
-	right: 0;
 	top: 0;
+	left: 0;
 	bottom: 0;
+	right: 0;
 	margin: auto;
+	width: 85%;
+	height: 16rem;
+	font-family: 'Bravura';
+	line-height: 3.2rem;
+	font-size: 3rem;
+	vertical-align: top;
 }
+.piano-game-lines {
+	margin: 0;
+	padding-left: 2.8rem;
+	list-style: none;
+}
+.piano-game-space {
+	text-align: center;
+}
+.piano-game-gap {
+	height: .8rem;
+	line-height: .8rem;
+	width: 100%;
+}
+.piano-game-line {
+	box-sizing: border-box;
+	height: 0;
+	border-top: .1rem solid rgba(127,127,127,.5);
+}
+.piano-game-ledger {
+	box-sizing: border-box;
+	border-top: .1rem solid rgba(127,127,127,0);
+	margin: auto;
+	height: 0;
+	line-height: 0;
+	width: 1.8rem;
+	position: relative;
+}
+.piano-game-note {
+	display: inline-block;
+	vertical-align: top;
+	line-height: 0;
+	text-align: center;
+}
+.piano-game-gap .piano-game-note {
+	line-height: .9rem;
+	vertical-align: middle;
+}
+.piano-game-ledger-visible {
+	border-top: .1rem solid rgba(127,127,127,.5);
+}
+.piano-game-clef {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin-top: .15rem;
+}
+.piano-game-clef-treble {
+	position: absolute;
+	top: 4.45rem;
+	left: -.015rem;
+}
+.piano-game-clef-bass {
+	position: absolute;
+	top: 7.85rem;
+}
+
 
 .piano-game-keyboard {
 	box-sizing: border-box;
