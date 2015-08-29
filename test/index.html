@@ -15,6 +15,10 @@
 
 
 <style type="text/css">
+	html, body {
+		/** Adjust size of staves */
+		font-size: 90%;
+	}
 	html {
 		position: relative;
 		height: 100%;
@@ -23,6 +27,7 @@
 		position: relative;
 		margin: 0;
 		height: 100%;
+		min-height: 480px;
 	}
 
 	.piano-game {
@@ -57,6 +62,11 @@
 
 <script src="bundle.js"></script>
 <script type="text/javascript">
+window.addEventListener("load",function() {
+	setTimeout(function(){
+	window.scrollTo(0, 0);
+	}, 0);
+});
 
 var Game = require('piano-game');
 
