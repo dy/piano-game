@@ -1,0 +1,75 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="Piano game">
+<meta name="keyword" content="Piano, game">
+<meta name="author" content="Deema Yvanow" />
+<meta name="copyright" content="© 2015 Dmitry Ivanov" />
+<meta name="contact" content="df.creative@gmail.com" />
+<meta http-equiv="content-language" content="en" />
+
+<link rel="stylesheet" type="text/css" href="./bundle.css"/>
+<!-- <link rel="stylesheet" type="text/css" href="../index.css"/> -->
+
+
+<style type="text/css">
+	html {
+		position: relative;
+		height: 100%;
+	}
+	body {
+		position: relative;
+		margin: 0;
+		height: 100%;
+	}
+
+	.piano-game {
+		height: 100%;
+	}
+
+	.start-button {
+		cursor: pointer;
+		background: rgba(0,0,0,.92);
+		position: absolute;
+		color: white;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		border: 0;
+		text-align: center;
+		z-index: 998;
+		font-size: 12rem;
+		text-shadow: 0 1px 2rem white;
+		outline: none;
+	}
+</style>
+
+
+<button class="start-button">▸</button>
+
+<div class="piano-game"></div>
+
+<script src="bundle.js"></script>
+<script type="text/javascript">
+
+var Game = require('piano-game');
+
+// create a new game
+var game = new Game({
+	element: document.querySelector('.piano-game')
+});
+
+// start game
+var startButton = document.querySelector('.start-button');
+startButton.addEventListener('click', function c() {
+	startButton.removeEventListener('click', c);
+	startButton.parentNode.removeChild(startButton);
+	game.start();
+}, false);
+</script>

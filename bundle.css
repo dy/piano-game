@@ -1,0 +1,335 @@
+@charset "UTF-8";
+
+.piano-keyboard {
+	height: 5rem;
+	width: 10rem;
+	cursor: pointer;
+	position: relative;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	 -ms-user-select: none;
+	     user-select: none;
+
+	display: -webkit-box;
+
+	display: -webkit-flex;
+
+	display: -ms-flexbox;
+
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	    -ms-flex-direction: row;
+	        flex-direction: row;
+	-webkit-flex-wrap: nowrap;
+	    -ms-flex-wrap: nowrap;
+	        flex-wrap: nowrap;
+	-webkit-box-pack: start;
+	-webkit-justify-content: flex-start;
+	    -ms-flex-pack: start;
+	        justify-content: flex-start;
+	-webkit-align-content: stretch;
+	    -ms-flex-line-pack: stretch;
+	        align-content: stretch;
+	-webkit-box-align: start;
+	-webkit-align-items: flex-start;
+	    -ms-flex-align: start;
+	        align-items: flex-start;
+}
+
+.piano-keyboard-key {
+	position: relative;
+	height: 100%;
+	width: auto;
+	-webkit-box-ordinal-group: 1;
+	-webkit-order: 0;
+	    -ms-flex-order: 0;
+	        order: 0;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 0 auto;
+	    -ms-flex: 1 0 auto;
+	        flex: 1 0 auto;
+	-webkit-align-self: auto;
+	    -ms-flex-item-align: auto;
+	        align-self: auto;
+}
+.piano-keyboard-key-white {
+	background: rgb(255,255,255);
+	box-shadow: inset 0 0 0px 1px rgba(87, 85, 65, 0.12);
+}
+.piano-keyboard-key-black {
+	height: 67%;
+	background: rgb(12,11,10);
+	box-shadow: none;
+	position: absolute;
+	top: 0;
+	z-index: 1;
+	right: -33%;
+	width: 67%;
+}
+.piano-keyboard-key-black:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	top: 0;
+	border-bottom: 1.4rem solid rgba(220, 230, 231, 0.06);
+	border-left: .35rem solid rgba(255, 249, 245, 0.12);
+	border-right: .35rem solid rgba(230, 236, 241, 0.16);
+	border-top: none;
+}
+.piano-keyboard-key-c-sharp {
+	right: -20%;
+}
+.piano-keyboard-key-d-sharp {
+	right: -47%;
+}
+.piano-keyboard-key-f-sharp {
+	right: -17%;
+}
+.piano-keyboard-key-a-sharp {
+	right: -50%;
+}
+.piano-keyboard-key-active {
+	background: rgb(181, 226, 255);
+	box-shadow: none;
+}
+
+/** Optional vertical style */
+.piano-keyboard-vertical {
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: reverse;
+	-webkit-flex-direction: column-reverse;
+	    -ms-flex-direction: column-reverse;
+	        flex-direction: column-reverse;
+}
+.piano-keyboard-vertical .piano-keyboard-key-white {
+	width: 100%;
+	height: auto;
+}
+.piano-keyboard-vertical .piano-keyboard-key-black {
+	width: 67%;
+	top: -33%;
+	height: 67%;
+	right: auto;
+}
+.piano-keyboard-vertical .piano-keyboard-key-black:after {
+	border-right: 1.4rem solid rgba(233, 231, 220, 0.06);
+	border-bottom: .35rem solid rgba(255, 249, 245, 0.12);
+	border-top: .35rem solid rgba(230, 236, 241, 0.16);
+	border-left: none;
+}
+.piano-keyboard-vertical .piano-keyboard-key-c-sharp {
+	top: -20%;
+}
+.piano-keyboard-vertical .piano-keyboard-key-d-sharp {
+	top: -47%;
+}
+.piano-keyboard-vertical .piano-keyboard-key-f-sharp {
+	top: -17%;
+}
+.piano-keyboard-vertical .piano-keyboard-key-a-sharp {
+	top: -50%;
+}
+
+@font-face {
+	font-family: 'Bravura';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Bravura'),
+		url('./font/Bravura.otf') format('otf'),
+		url('./font/Bravura.eot') format('eot'),
+		url('./font/Bravura.woff') format('woff'),
+		url('./font/Bravura.svg') format('svg');
+	/*unicode-range:U+E000-1D1FF;*/
+}
+
+
+html, body {
+	font-size: 90%;
+}
+
+.piano-game {
+	position: relative;
+	width: 100%;
+	min-height: 320px;
+	box-sizing: border-box;
+}
+
+.piano-game-score {
+	width: 100%;
+	/* This ratio keeps the rect formed by staves/keys centered */
+	height: 53%;
+	display: block;
+	position: relative;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	    -ms-flex-direction: row;
+	        flex-direction: row;
+	-webkit-flex-wrap: nowrap;
+	    -ms-flex-wrap: nowrap;
+	        flex-wrap: nowrap;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-align-content: stretch;
+	    -ms-flex-line-pack: stretch;
+	        align-content: stretch;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+}
+.piano-game-stave {
+	position: relative;
+	box-sizing: border-box;
+	-webkit-box-flex: 0;
+	-webkit-flex: 0 1 auto;
+	    -ms-flex: 0 1 auto;
+	        flex: 0 1 auto;
+	-webkit-align-self: auto;
+	    -ms-flex-item-align: auto;
+	        align-self: auto;
+	width: 85%;
+	padding-left: 2.9rem;
+	font-family: 'Bravura';
+	line-height: 3.2rem;
+	font-size: 3.2rem;
+}
+.piano-game-position {
+	text-align: center;
+	position: relative;
+}
+.piano-game-position-space {
+	height: .8rem;
+	line-height: .8rem;
+}
+.piano-game-position-line {
+	box-sizing: border-box;
+	height: 0;
+	border-top: .1rem solid rgba(127,127,127,.5);
+}
+.piano-game-position-ledger {
+	box-sizing: border-box;
+	border-top: .1rem solid rgba(127,127,127,0);
+	margin: auto;
+	height: 0;
+	line-height: 0;
+	width: 1.8rem;
+	position: relative;
+}
+.piano-game-note {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	line-height: 0;
+	-webkit-transition: 1s ease-out;
+	        transition: 1s ease-out;
+}
+.piano-game-note-right {
+	text-shadow: 0 0 6px rgb(56, 221, 75);
+	color: rgba(48, 218, 69, .8);
+}
+.piano-game-note:after {
+	/* http://unicode.org/charts/PDF/U1D100.pdf */
+	content: '\1D15D';
+}
+.piano-game-note-sharp:before {
+	content: '\266f';
+	position: absolute;
+	left: -1rem;
+}
+.piano-game-note-active {
+	color: rgb(185,0,0);
+}
+.piano-game-position-space .piano-game-note {
+	line-height: .95rem;
+}
+.piano-game-position-ledger-visible {
+	border-top: .1rem solid rgba(127,127,127,.5);
+}
+.piano-game-clef {
+	position: absolute;
+	top: 0;
+	left: 0;
+	line-height: 3.2rem;
+	margin-top: .15rem;
+}
+.piano-game-clef-treble {
+	position: absolute;
+	top: 3.6rem;
+	left: -.2rem;
+}
+.piano-game-clef-treble:before {
+	content: '\1D11E';
+}
+.piano-game-clef-bass {
+	position: absolute;
+	top: 7rem;
+}
+.piano-game-clef-bass:before {
+	content: '\1D122';
+}
+
+
+.piano-game-keyboard {
+	box-sizing: border-box;
+	border-top: 3px solid rgb(185,0,0);
+	width: 100%;
+	height: 47%;
+}
+/** Hide half of the keys on the small screens */
+@media (max-width: 479px) {
+	.piano-keyboard-key:nth-child(n+8) {
+		display: none;
+	}
+}
+@media (max-width: 959px) {
+	.piano-keyboard-key:nth-child(n+15) {
+		display: none;
+	}
+}
+.piano-keyboard-key-white {
+	box-sizing: border-box;
+	border-right: 1px solid rgba(70,50,0,.12);
+	box-shadow: none;
+	background: white;
+}
+.piano-keyboard-key-white:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: -1px;
+	height: .4rem;
+	background: -webkit-linear-gradient(rgba(60,10,0,.3) 5%, rgba(20,0,30,.1) 45%, rgba(0,0,0,0) 95%);
+	background: linear-gradient(rgba(60,10,0,.3) 5%, rgba(20,0,30,.1) 45%, rgba(0,0,0,0) 95%);
+}
+.piano-keyboard-key-black {
+	width: 75%;
+	background: rgb(35,37,40);
+}
+.piano-keyboard-key-black:after {
+    border-bottom: 1rem solid rgba(5, 10, 0, .25);
+    border-left: .2rem solid rgba(0, 0, 0, .15);
+    border-right: .2rem solid rgba(0, 0, 0, .15);
+    border-top: none;
+}
+.piano-keyboard-key-active {
+	background: rgb(185,0,0);
+}
+.piano-keyboard-key-wrong {
+	background: rgba(234, 101, 84, 1);
+}
+.piano-keyboard-key-right {
+	background: rgba(48, 218, 69, 1);
+}
