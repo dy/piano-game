@@ -15,6 +15,10 @@
 }
 
 
+html, body {
+	font-size: 90%;
+}
+
 .piano-game {
 	position: relative;
 	width: 100%;
@@ -101,6 +105,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
+	line-height: 3.2rem;
 	margin-top: .15rem;
 }
 .piano-game-clef-treble {
@@ -127,12 +132,12 @@
 	height: 47%;
 }
 /** Hide half of the keys on the small screens */
-@media (max-width: 640px) {
+@media (max-width: 479px) {
 	.piano-keyboard-key:nth-child(n+8) {
 		display: none;
 	}
 }
-@media (max-width: 960px) {
+@media (max-width: 959px) {
 	.piano-keyboard-key:nth-child(n+15) {
 		display: none;
 	}
@@ -169,5 +174,5 @@
 	background: rgba(234, 101, 84, 1);
 }
 .piano-keyboard-key-right {
-	background: rgba(48, 218, 69, .8);
+	background: rgba(48, 218, 69, 1);
 }
