@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "watchify -r ./index.js:piano-game -d -o ./test/bundle.js",
     "build": "browserify -r ./index.js:piano-game -o ./test/bundle.js",
-    "css": "postcss -u postcss-import ./index.css > test/bundle.css",
+    "css": "postcss -u postcss-import -u autoprefixer ./index.css > test/bundle.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "browserify": {
@@ -45,9 +45,8 @@
     "autoprefixer": "^5.2.0",
     "babelify": "^6.2.0",
     "browserify": "^11.0.1",
-    "postcss": "^5.0.2",
     "postcss-cli": "^2.0.0",
-    "postcss-import": "^6.2.0",
+    "postcss-import": "^7.0.0",
     "watchify": "^3.3.1"
   }
 }

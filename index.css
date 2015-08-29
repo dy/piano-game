@@ -126,7 +126,17 @@
 	width: 100%;
 	height: 47%;
 }
-
+/** Hide half of the keys on the small screens */
+@media (max-width: 640px) {
+	.piano-keyboard-key:nth-child(n+8) {
+		display: none;
+	}
+}
+@media (max-width: 960px) {
+	.piano-keyboard-key:nth-child(n+15) {
+		display: none;
+	}
+}
 .piano-keyboard-key-white {
 	box-sizing: border-box;
 	border-right: 1px solid rgba(70,50,0,.12);

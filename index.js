@@ -122,7 +122,7 @@ class Game extends Emitter {
 
 		// get options
 		options = extend({
-			range: ['c4', 'c5'],
+			range: ['c3', 'c6'],
 			element: el
 		}, options);
 
