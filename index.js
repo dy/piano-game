@@ -1,3 +1,4 @@
+import 'babelify/polyfill';
 import Emitter from 'events';
 import Keyboard from 'piano-keyboard';
 import extend from 'xtend/mutable';
@@ -6,7 +7,6 @@ import sameMembers from 'same-members';
 import qwertyStream from 'midi-qwerty-keys';
 import uniqRandom from 'unique-random';
 import key from 'piano-key';
-import slice from 'sliced';
 
 
 /**
@@ -59,50 +59,46 @@ class Game extends Emitter {
 		el.className = 'piano-game-score';
 
 		el.innerHTML = `
-			<div class="piano-game-stave">
-				<ul class="piano-game-lines">
-					<li class="piano-game-space piano-game-gap" data-space="57"></li>
-					<li class="piano-game-space piano-game-ledger" data-space="56" data-ledger></li>
-					<li class="piano-game-space piano-game-gap" data-space="55"></li>
-					<li class="piano-game-space piano-game-ledger" data-space="54" data-ledger></li>
-					<li class="piano-game-space piano-game-gap" data-space="53"></li>
-					<li class="piano-game-space piano-game-ledger" data-space="52" data-ledger></li>
-					<li class="piano-game-space piano-game-gap" data-space="51"></li>
-					<li class="piano-game-space piano-game-line" data-space="50"></li>
-					<li class="piano-game-space piano-game-gap" data-space="49"></li>
-					<li class="piano-game-space piano-game-line" data-space="48"></li>
-					<li class="piano-game-space piano-game-gap" data-space="47"></li>
-					<li class="piano-game-space piano-game-line" data-space="46"></li>
-					<li class="piano-game-space piano-game-gap" data-space="45"></li>
-					<li class="piano-game-space piano-game-line" data-space="44"></li>
-					<li class="piano-game-space piano-game-gap" data-space="43"></li>
-					<li class="piano-game-space piano-game-line" data-space="42"></li>
-					<li class="piano-game-space piano-game-gap" data-space="41"></li>
-					<li class="piano-game-space piano-game-ledger" data-space="40" data-ledger><span class="piano-game-note" data-note>&#x1D15D</span></li>
-					<li class="piano-game-space piano-game-gap" data-space="39"></li>
-					<li class="piano-game-space piano-game-line" data-space="38"></li>
-					<li class="piano-game-space piano-game-gap" data-space="37"></li>
-					<li class="piano-game-space piano-game-line" data-space="36"></li>
-					<li class="piano-game-space piano-game-gap" data-space="35"></li>
-					<li class="piano-game-space piano-game-line" data-space="34"></li>
-					<li class="piano-game-space piano-game-gap" data-space="33"></li>
-					<li class="piano-game-space piano-game-line" data-space="32"></li>
-					<li class="piano-game-space piano-game-gap" data-space="31"></li>
-					<li class="piano-game-space piano-game-line" data-space="30"></li>
-					<li class="piano-game-space piano-game-gap" data-space="29"></li>
-					<li class="piano-game-space piano-game-ledger" data-space="28" data-ledger></li>
-					<li class="piano-game-space piano-game-gap" data-space="27"></li>
-					<li class="piano-game-space piano-game-ledger" data-space="26" data-ledger></li>
-					<li class="piano-game-space piano-game-gap" data-space="25"></li>
-					<li class="piano-game-space piano-game-ledger" data-space="24" data-ledger></li>
-					<li class="piano-game-space piano-game-gap" data-space="23"></li>
-				</ul>
-				<span class="piano-game-clef piano-game-clef-treble">&#x1D11E;</span>
-				<span class="piano-game-clef piano-game-clef-bass">&#x1D122;</span>
+			<div class="piano-game-stave" data-stave>
+				<span class="piano-game-clef piano-game-clef-treble"></span>
+				<span class="piano-game-clef piano-game-clef-bass"></span>
 			</div>
 		`;
 
-		self.noteElement = el.querySelector('[data-note]');
+		self.staveElement = el.querySelector('[data-stave]');
+
+		//create lines
+		var positionEl = document.createElement('div');
+		positionEl.className = 'piano-game-position';
+
+		var pos = key.getOctave(self.range[0]);
+
+		for (var i = self.range[1]; i >= self.range[0]; i--) {
+			//ignore black keys
+			if (key.isBlack(i)) continue;
+
+			var posEl = positionEl.cloneNode();
+			posEl.setAttribute('data-position', i);
+
+
+			if (!(pos++ % 2)) {
+				posEl.classList.add('piano-game-position-space');
+			}
+			else {
+				if (i === 40 || i > 57 || i < 23) {
+					posEl.classList.add('piano-game-position-ledger');
+					posEl.setAttribute('data-ledger', true);
+				}
+				else {
+					posEl.classList.add('piano-game-position-line');
+				}
+			}
+
+			posEl.setAttribute('data-position-sharp', i+1);
+			posEl.setAttribute('data-position-flat', i-1);
+
+			self.staveElement.appendChild(posEl)
+		}
 
 		self.element.appendChild(el);
 
@@ -138,14 +134,23 @@ class Game extends Emitter {
 
 
 		// make sound
-		keyboard.on('noteOn', function () {
-			self.highlightNotes(keyboard.activeNotes);
+		keyboard.on('noteOn', function ({which, value, target}) {
+			self.highlightNote(which);
 
-			self.checkAnswer(keyboard.activeNotes);
+			if (!self.checkAnswer(keyboard.activeNotes)) {
+				target.classList.add('piano-keyboard-key-wrong');
+			} else {
+				target.classList.add('piano-keyboard-key-right');
+				self.indicateCorrectAnswer(function () {
+					self.clearNotes();
+					self.question = self.generateQuestion();
+					self.showQuestion(self.question);
+				});
+			}
 		});
 
-		keyboard.on('noteOff', function () {
-			self.unhighlightNotes();
+		keyboard.on('noteOff', function ({which, value, target}) {
+			self.unhighlightNote(which);
 
 			self.checkAnswer(keyboard.activeNotes);
 		});
@@ -165,21 +170,20 @@ class Game extends Emitter {
 	/**
 	 * Test passed notes on correctness to the question
 	 */
-	checkAnswer (answerNotes) {
+	checkAnswer (notes) {
 		var self = this;
 
-		//FIXME: check by octaves, if needed
-		if (sameMembers(answerNotes, self.question.notes)) {
-			self.indicateCorrectAnswer();
-			self.question = self.generateQuestion();
-			self.showQuestion(self.question);
+		//check by octaves
+		var answerNotes = [...notes].map(key.getNote);
+		var questionNotes = [...self.question.notes].map(key.getNote);
+
+		if (sameMembers(answerNotes, questionNotes)) {
+			return true;
 		}
 
 		else {
-
+			return false;
 		}
-
-		return self;
 	}
 
 
@@ -206,41 +210,79 @@ class Game extends Emitter {
 
 		var note = notes[0];
 
-		var noteSpace = self.stave.querySelector('[data-space="' + note + '"]');
-		noteSpace.appendChild(self.noteElement);
+		var noteElement = document.createElement('div');
+		noteElement.className = 'piano-game-note';
+		noteElement.setAttribute('data-note', note);
+
+		var isSharp = false;
+		var notePosition = self.stave.querySelector(`[data-position="${ note }"]`);
+
+		//if no space found for an element - sharpen it
+		if (!notePosition) {
+			isSharp = true;
+			notePosition = self.stave.querySelector(`[data-position-sharp="${ note }"]`);
+			noteElement.setAttribute('data-sharp', true);
+			noteElement.classList.add('piano-game-note-sharp');
+		}
+		notePosition.appendChild(noteElement);
 
 		//hide all ledger lines
-		slice(self.stave.querySelectorAll('[data-ledger]')).forEach(function (ledger) {
-			ledger.classList.remove('piano-game-ledger-visible');
+		[...self.stave.querySelectorAll('[data-ledger]')].forEach(function (ledger) {
+			ledger.classList.remove('piano-game-position-ledger-visible');
 		});
 
 		//show ledger lines
-		if (note > 50) {
-			for ( var i = 50; i <= note; i +=2) {
-				self.stave.querySelector('[data-space="' + i + '"]').classList.add('piano-game-ledger-visible');
+		if (note > 57) {
+			for ( var i = 50; i <= note + (isSharp ? 1 : 0); i++) {
+				var ledger = self.stave.querySelector(`[data-ledger][data-position="${ i }"]`);
+				if (ledger) ledger.classList.add('piano-game-position-ledger-visible');
 			}
 		}
-		else if (note <= 28) {
-			for ( var i = 28; i >= note; i -=2) {
-				self.stave.querySelector('[data-space="' + i + '"]').classList.add('piano-game-ledger-visible');
+		else if (note <= 23) {
+			for ( var i = 28; i >= note - (isSharp ? 1 : 0); i--) {
+				var ledger = self.stave.querySelector(`[data-ledger][data-position="${ i }"]`);
+				if (ledger) ledger.classList.add('piano-game-position-ledger-visible');
 			}
 		}
-		else if (note === 40) {
-			self.stave.querySelector('[data-space="40"]').classList.add('piano-game-ledger-visible');
+		else if (note === 40 || note === 41) {
+			self.stave.querySelector('[data-position="40"]').classList.add('piano-game-position-ledger-visible');
 		}
-		console.log(note)
 
 		return self;
 	}
 
 
 	/**
-	 * Show visually, play nice sound
+	 * Remove all notes from stave
 	 */
-	indicateCorrectAnswer () {
+	clearNotes () {
 		var self = this;
 
-		//TODO
+		var notes = [...self.stave.querySelectorAll(`[data-note]`)].forEach(function (note) {
+				note.parentNode.removeChild(note);
+			});
+
+		//remove classes from the keyboard keys
+		self.keyboard.noteElements.forEach(function (el) {
+			el.classList.remove('piano-keyboard-key-right');
+			el.classList.remove('piano-keyboard-key-wrong');
+		});
+
+		return self;
+	}
+
+
+	/**
+	 * Show visually proper answer, invoke callback after delay
+	 */
+	indicateCorrectAnswer (callback) {
+		var self = this;
+
+		self.stave.querySelector('[data-note]').classList.add('piano-game-note-right');
+
+		setTimeout(function () {
+			callback.call(self);
+		}, 1000);
 
 		return self;
 	}
@@ -267,7 +309,7 @@ class Game extends Emitter {
 		var question = {};
 
 		question.notes = self.generateNotes(
-			Math.ceil(Math.random() * (self.maxNotes - 1)),
+			Math.ceil(Math.random() * self.maxNotes),
 			self.range
 		);
 
@@ -298,8 +340,14 @@ class Game extends Emitter {
 	/**
 	 * Highlight specific note on a staff
 	 */
-	highlightNotes (note) {
+	highlightNote (note) {
 		var self = this;
+
+		// var highlightedNote = self.noteElement.cloneNode(true);
+		// highlightedNote.setAttribute('data-note', note);
+		// highlightedNote.classList.add('piano-game-note-active');
+
+		// self.stave.querySelector(`[data-position="${note}"]`).appendChild(highlightedNote);
 
 		return self;
 	}
@@ -308,8 +356,14 @@ class Game extends Emitter {
 	/**
 	 * Clear highlight of a note on a staff
 	 */
-	unhighlightNotes (note) {
+	unhighlightNote (note) {
 		var self = this;
+
+		// var noteEl = self.stave.querySelector(`[data-note="${note}"]`);
+
+		// if (noteEl) {
+		// 	noteEl.parentNode.removeChild(noteEl);
+		// }
 
 		return self;
 	}
@@ -341,11 +395,11 @@ Game.prototype.requireOctave = false;
 
 
 /** Max number of notes to ask */
-Game.prototype.maxNotes = 3;
+Game.prototype.maxNotes = 1;
 
 
 /** Default range to generate notes between */
-Game.prototype.range = [23, 57];
+Game.prototype.range = [key.getNumber('a1'), key.getNumber('e6')];
 
 
 export default Game;
