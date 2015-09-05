@@ -147,11 +147,6 @@
 	/*unicode-range:U+E000-1D1FF;*/
 }
 
-
-html, body {
-	font-size: 90%;
-}
-
 .piano-game {
 	position: relative;
 	width: 100%;
@@ -311,17 +306,17 @@ html, body {
 	left: 0;
 	right: -1px;
 	height: .4rem;
-	background: -webkit-linear-gradient(rgba(60,10,0,.3) 5%, rgba(20,0,30,.1) 45%, rgba(0,0,0,0) 95%);
-	background: linear-gradient(rgba(60,10,0,.3) 5%, rgba(20,0,30,.1) 45%, rgba(0,0,0,0) 95%);
+	background: -webkit-linear-gradient(rgba(60,10,0,.2) 0%, rgba(20,0,30,.07) 45%, rgba(0,0,0,0) 105%) no-repeat;
+	background: linear-gradient(rgba(60,10,0,.2) 0%, rgba(20,0,30,.07) 45%, rgba(0,0,0,0) 105%) no-repeat;
 }
 .piano-keyboard-key-black {
 	width: 75%;
 	background: rgb(35,37,40);
 }
 .piano-keyboard-key-black:after {
-    border-bottom: 1rem solid rgba(5, 10, 0, .25);
-    border-left: .2rem solid rgba(0, 0, 0, .15);
-    border-right: .2rem solid rgba(0, 0, 0, .15);
+    border-bottom: 1rem solid rgba(5, 10, 0, .12);
+    border-left: .3rem solid rgba(0, 0, 0, .06);
+    border-right: .3rem solid rgba(0, 0, 0, .06);
     border-top: none;
 }
 .piano-keyboard-key-active {

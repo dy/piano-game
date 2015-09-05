@@ -9126,111 +9126,6 @@ function through (write, end, opts) {
 }).call(this,require('_process'))
 },{"_process":196,"stream":210}],216:[function(require,module,exports){
 /**
- * List of frequencies for piano key
- * @module  piano-key
- */
-
-var loop = require('mumath/loop')
-
-
-/** Note frequencies dict */
-var key = {};
-
-
-/** Get name for a number */
-key.getName = function (number) {
-	return key.notes[loop(number - 4, 12)] + Math.round((number + 2) / 12);
-};
-
-
-/** Get frequency for a number */
-key.getFrequency = function (number) {
-	if (typeof number === 'string') {
-		number = key.getNumberFromName(number);
-	}
-
-	return Math.pow(2, (number - 49) / 12) * 440;
-};
-
-
-/** Get number for a name */
-key.getNumber = function (frequency) {
-	if (typeof frequency === 'string') {
-		return key.getNumberFromName(frequency);
-	}
-
-	return 12 * Math.log(frequency / 440) / Math.log(2) + 49;
-};
-
-
-/** Get note number from note name */
-key.getNumberFromName = function (name) {
-	var note = key.getNote(name);
-
-	//default octave is 0
-	var octave = key.getOctave(name);
-
-	var noteIdx = key.notes.indexOf(note);
-
-	if (noteIdx < 0) {
-		throw Error('Unknown note ' + name);
-	}
-
-	var noteNumber = (octave - 1) * 12 + noteIdx + 4;
-
-	return noteNumber;
-};
-
-
-/** Test whether key number passed is black */
-key.isBlack = function (name) {
-	if (typeof name === 'number') {
-		name = key.getName(name);
-	}
-
-	return /#/.test(name);
-};
-
-
-/** Return key octave by key number */
-key.getOctave = function (name) {
-	if (typeof name === 'number') {
-		name = key.getName(name);
-	}
-
-	var octave = /-?[0-9.]+/.exec(name);
-
-	//let default octave be 0
-	if (octave.length) {
-		return parseFloat(octave[0]);
-	}
-	else {
-		return 0;
-	}
-};
-
-
-/** Return note name from number/name */
-key.getNote = function (name) {
-	if (typeof name === 'number') {
-		name = key.getName(name);
-	}
-
-	var note = /[a-z#]+/i.exec(name);
-
-	note = (note.length ? note[0] : 'A').toUpperCase();
-
-	return note;
-};
-
-
-/** List of note names */
-key.notes = 'C C# D D# E F F# G G# A A# B'.split(' ');
-
-
-module.exports = key;
-},{"mumath/loop":217}],217:[function(require,module,exports){
-/**
  * @module  mumath/loop
  *
  * Looping function for any framesize
@@ -9258,7 +9153,7 @@ module.exports = require('./wrap')(function (value, left, right) {
 
 	return value;
 });
-},{"./wrap":218}],218:[function(require,module,exports){
+},{"./wrap":217}],217:[function(require,module,exports){
 /**
  * Get fn wrapped with array/object attrs recognition
  *
@@ -9298,7 +9193,7 @@ module.exports = function(fn){
 		}
 	};
 };
-},{}],219:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 /**
  * @module piano-keyboard
  */
@@ -9950,7 +9845,7 @@ proto.a11y = false;
 exports['default'] = Keyboard;
 module.exports = exports['default'];
 
-},{"domify":220,"emmy/delegate":221,"emmy/emit":222,"emmy/off":226,"emmy/on":227,"get-client-xy":228,"get-uid":229,"mucss/css":230,"mucss/selection":233,"mumath/is-between":234,"mutype/is-array":237,"mutype/is-number":241,"mutype/is-string":243,"piano-key":216,"sliced":244,"stream":210,"xtend/mutable":248}],220:[function(require,module,exports){
+},{"domify":219,"emmy/delegate":220,"emmy/emit":221,"emmy/off":225,"emmy/on":226,"get-client-xy":227,"get-uid":228,"mucss/css":229,"mucss/selection":232,"mumath/is-between":233,"mutype/is-array":236,"mutype/is-number":240,"mutype/is-string":242,"piano-key":"piano-key","sliced":243,"stream":210,"xtend/mutable":247}],219:[function(require,module,exports){
 
 /**
  * Expose `parse`.
@@ -10064,7 +9959,7 @@ function parse(html, doc) {
   return fragment;
 }
 
-},{}],221:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 /**
  * @module  emmy/delegate
  */
@@ -10133,7 +10028,7 @@ delegate.wrap = function (container, evt, fn, selector) {
 		});
 	});
 };
-},{"./on":227,"is-function":225,"mutype/is-array-like":236,"mutype/is-string":243}],222:[function(require,module,exports){
+},{"./on":226,"is-function":224,"mutype/is-array-like":235,"mutype/is-string":242}],221:[function(require,module,exports){
 /**
  * @module emmy/emit
  */
@@ -10253,7 +10148,7 @@ function emit(target, eventName, data, bubbles){
 
 	return target;
 }
-},{"./listeners":223,"icicle":224,"mutype/is-event":238,"mutype/is-node":240,"mutype/is-string":243,"sliced":244}],223:[function(require,module,exports){
+},{"./listeners":222,"icicle":223,"mutype/is-event":237,"mutype/is-node":239,"mutype/is-string":242,"sliced":243}],222:[function(require,module,exports){
 /**
  * A storage of per-target callbacks.
  * WeakMap is the most safe solution.
@@ -10385,7 +10280,7 @@ function hasTags(cb, tags){
 
 
 module.exports = listeners;
-},{}],224:[function(require,module,exports){
+},{}],223:[function(require,module,exports){
 /**
  * @module Icicle
  */
@@ -10457,7 +10352,7 @@ function isLocked(target, name){
 	var locks = lockCache.get(target);
 	return (locks && locks[name]);
 }
-},{}],225:[function(require,module,exports){
+},{}],224:[function(require,module,exports){
 module.exports = isFunction
 
 var toString = Object.prototype.toString
@@ -10474,7 +10369,7 @@ function isFunction (fn) {
       fn === window.prompt))
 };
 
-},{}],226:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 /**
  * @module emmy/off
  */
@@ -10582,7 +10477,7 @@ function off(target, evt, fn) {
 
 	return target;
 }
-},{"./listeners":223,"icicle":224,"mutype/is-array":237,"sliced":244}],227:[function(require,module,exports){
+},{"./listeners":222,"icicle":223,"mutype/is-array":236,"sliced":243}],226:[function(require,module,exports){
 /**
  * @module emmy/on
  */
@@ -10667,7 +10562,7 @@ on.wrap = function(target, evt, fn, condition){
 
 	return cb;
 };
-},{"./listeners":223,"icicle":224,"mutype/is-object":242}],228:[function(require,module,exports){
+},{"./listeners":222,"icicle":223,"mutype/is-object":241}],227:[function(require,module,exports){
 /**
  * Get clientY/clientY from an event.
  * If index is passed, treat it as index of global touches, not the targetTouches.
@@ -10726,14 +10621,14 @@ getClientXY.y = getClientY;
 getClientXY.findTouch = findTouch;
 
 module.exports = getClientXY;
-},{}],229:[function(require,module,exports){
+},{}],228:[function(require,module,exports){
 /** generate unique id for selector */
 var counter = Date.now() % 1e9;
 
 module.exports = function getUid(){
 	return (Math.random() * 1e9 >>> 0) + (counter++);
 };
-},{}],230:[function(require,module,exports){
+},{}],229:[function(require,module,exports){
 /**
  * Get or set element’s style, prefix-agnostic.
  *
@@ -10793,13 +10688,13 @@ function prefixize(name){
 	return '';
 }
 
-},{"./fake-element":231,"./prefix":232}],231:[function(require,module,exports){
+},{"./fake-element":230,"./prefix":231}],230:[function(require,module,exports){
 /** Just a fake element to test styles
  * @module mucss/fake-element
  */
 
 module.exports = document.createElement('div');
-},{}],232:[function(require,module,exports){
+},{}],231:[function(require,module,exports){
 /**
  * Vendor prefixes
  * Method of http://davidwalsh.name/vendor-prefix
@@ -10821,7 +10716,7 @@ module.exports = {
 	css: '-' + pre + '-',
 	js: pre[0].toUpperCase() + pre.substr(1)
 };
-},{}],233:[function(require,module,exports){
+},{}],232:[function(require,module,exports){
 /**
  * Enable/disable selectability of an element
  * @module mucss/selection
@@ -10858,7 +10753,7 @@ exports.enable = function(el){
 function pd(e){
 	e.preventDefault();
 }
-},{"./css":230}],234:[function(require,module,exports){
+},{"./css":229}],233:[function(require,module,exports){
 /**
  * Whether element is between left & right including
  *
@@ -10872,9 +10767,9 @@ module.exports = require('./wrap')(function(a, left, right){
 	if (a <= right && a >= left) return true;
 	return false;
 });
-},{"./wrap":235}],235:[function(require,module,exports){
-arguments[4][218][0].apply(exports,arguments)
-},{"dup":218}],236:[function(require,module,exports){
+},{"./wrap":234}],234:[function(require,module,exports){
+arguments[4][217][0].apply(exports,arguments)
+},{"dup":217}],235:[function(require,module,exports){
 var isString = require('./is-string');
 var isArray = require('./is-array');
 var isFn = require('./is-fn');
@@ -10883,27 +10778,27 @@ var isFn = require('./is-fn');
 module.exports = function (a){
 	return isArray(a) || (a && !isString(a) && !a.nodeType && (typeof window != 'undefined' ? a != window : true) && !isFn(a) && typeof a.length === 'number');
 }
-},{"./is-array":237,"./is-fn":239,"./is-string":243}],237:[function(require,module,exports){
+},{"./is-array":236,"./is-fn":238,"./is-string":242}],236:[function(require,module,exports){
 module.exports = function(a){
 	return a instanceof Array;
 }
-},{}],238:[function(require,module,exports){
+},{}],237:[function(require,module,exports){
 module.exports = function(target){
 	return typeof Event !== 'undefined' && target instanceof Event;
 };
-},{}],239:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 module.exports = function(a){
 	return !!(a && a.apply);
 }
-},{}],240:[function(require,module,exports){
+},{}],239:[function(require,module,exports){
 module.exports = function(target){
 	return typeof document !== 'undefined' && target instanceof Node;
 };
-},{}],241:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 module.exports = function(a){
 	return typeof a === 'number' || a instanceof Number;
 }
-},{}],242:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 /**
  * @module mutype/is-object
  */
@@ -10916,14 +10811,14 @@ module.exports = function(o){
 	return !!o && typeof o === 'object' && o.constructor === Object;
 };
 
-},{}],243:[function(require,module,exports){
+},{}],242:[function(require,module,exports){
 module.exports = function(a){
 	return typeof a === 'string' || a instanceof String;
 }
-},{}],244:[function(require,module,exports){
+},{}],243:[function(require,module,exports){
 module.exports = exports = require('./lib/sliced');
 
-},{"./lib/sliced":245}],245:[function(require,module,exports){
+},{"./lib/sliced":244}],244:[function(require,module,exports){
 
 /**
  * An Array.prototype.slice.call(arguments) alternative
@@ -10958,7 +10853,7 @@ module.exports = function (args, slice, sliceEnd) {
 }
 
 
-},{}],246:[function(require,module,exports){
+},{}],245:[function(require,module,exports){
 'use strict';
 
 var same = require('array-same');
@@ -10982,7 +10877,7 @@ function toArray(source) {
 	return res;
 }
 
-},{"array-same":1}],247:[function(require,module,exports){
+},{"array-same":1}],246:[function(require,module,exports){
 'use strict';
 module.exports = function (min, max) {
 	var prev;
@@ -10992,7 +10887,7 @@ module.exports = function (min, max) {
 	};
 };
 
-},{}],248:[function(require,module,exports){
+},{}],247:[function(require,module,exports){
 module.exports = extend
 
 function extend(target) {
@@ -11013,7 +10908,7 @@ function extend(target) {
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-		value: true
+	value: true
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -11067,396 +10962,394 @@ var _pianoKey2 = _interopRequireDefault(_pianoKey);
  */
 
 var Game = (function (_Emitter) {
-		_inherits(Game, _Emitter);
+	_inherits(Game, _Emitter);
 
-		function Game(options) {
-				_classCallCheck(this, Game);
+	function Game(options) {
+		_classCallCheck(this, Game);
 
-				_get(Object.getPrototypeOf(Game.prototype), 'constructor', this).call(this);
+		_get(Object.getPrototypeOf(Game.prototype), 'constructor', this).call(this);
 
-				var self = this;
+		var self = this;
 
-				(0, _xtendMutable2['default'])(self, options);
+		(0, _xtendMutable2['default'])(self, options);
 
-				//ensure element
-				if (!self.element) {
-						self.element = document.createElement('div');
-				}
-
-				//ensure context
-				if (!self.context) {
-						self.context = _audioContext2['default'];
-				}
-
-				//create stave
-				self.stave = self.createStave(options.stave);
-
-				//create kbd
-				self.keyboard = self.createKeyboard(options.keyboard);
-
-				//reassign own range, cause piano casts it to numbers
-				// self.range = self.range.map(key.getNumber);
-
-				//ask the first question
-				self.question = self.generateQuestion();
-				self.showQuestion(self.question);
+		//ensure element
+		if (!self.element) {
+			self.element = document.createElement('div');
 		}
 
-		/** Require octave during the answer */
+		//ensure context
+		if (!self.context) {
+			self.context = _audioContext2['default'];
+		}
+
+		//create stave
+		self.stave = self.createStave(options.stave);
+
+		//create kbd
+		self.keyboard = self.createKeyboard(options.keyboard);
+
+		//hook up unique random fn
+		self._random = (0, _uniqueRandom2['default'])(self.range[0], self.range[1]);
+
+		//ask the first question
+		self.question = self.generateQuestion();
+		self.showQuestion(self.question);
+	}
+
+	/** Require octave during the answer */
+
+	/**
+  * Create staff based off options
+  *
+  * @param {[type]} options [description]
+  *
+  * @return {[type]} [description]
+  */
+
+	_createClass(Game, [{
+		key: 'createStave',
+		value: function createStave(options) {
+			var self = this;
+
+			var el = document.createElement('div');
+			el.className = 'piano-game-score';
+
+			el.innerHTML = '\n\t\t\t<div class="piano-game-stave" data-stave>\n\t\t\t\t<span class="piano-game-clef piano-game-clef-treble"></span>\n\t\t\t\t<span class="piano-game-clef piano-game-clef-bass"></span>\n\t\t\t</div>\n\t\t';
+
+			self.staveElement = el.querySelector('[data-stave]');
+
+			//create lines
+			var positionEl = document.createElement('div');
+			positionEl.className = 'piano-game-position';
+
+			var pos = _pianoKey2['default'].getOctave(self.range[0]);
+
+			for (var i = self.range[1]; i >= self.range[0]; i--) {
+				//ignore black keys
+				if (_pianoKey2['default'].isBlack(i)) continue;
+
+				var posEl = positionEl.cloneNode();
+				posEl.setAttribute('data-position', i);
+
+				if (!(pos++ % 2)) {
+					posEl.classList.add('piano-game-position-space');
+				} else {
+					if (i === 40 || i > 57 || i < 23) {
+						posEl.classList.add('piano-game-position-ledger');
+						posEl.setAttribute('data-ledger', true);
+					} else {
+						posEl.classList.add('piano-game-position-line');
+					}
+				}
+
+				posEl.setAttribute('data-position-sharp', i + 1);
+				posEl.setAttribute('data-position-flat', i - 1);
+
+				self.staveElement.appendChild(posEl);
+			}
+
+			self.element.appendChild(el);
+
+			return el;
+		}
 
 		/**
-   * Create staff based off options
+   * Create keyboard based off options
    *
    * @param {[type]} options [description]
    *
    * @return {[type]} [description]
    */
+	}, {
+		key: 'createKeyboard',
+		value: function createKeyboard(options) {
+			var self = this;
 
-		_createClass(Game, [{
-				key: 'createStave',
-				value: function createStave(options) {
-						var self = this;
+			// create element
+			var el = document.createElement('div');
+			el.className = 'piano-game-keyboard';
 
-						var el = document.createElement('div');
-						el.className = 'piano-game-score';
+			// get options
+			options = (0, _xtendMutable2['default'])({
+				range: ['c4', 'c7'],
+				element: el
+			}, options);
 
-						el.innerHTML = '\n\t\t\t<div class="piano-game-stave" data-stave>\n\t\t\t\t<span class="piano-game-clef piano-game-clef-treble"></span>\n\t\t\t\t<span class="piano-game-clef piano-game-clef-bass"></span>\n\t\t\t</div>\n\t\t';
+			var keyboard = new _pianoKeyboard2['default'](options);
 
-						self.staveElement = el.querySelector('[data-stave]');
+			//insert element
+			self.element.appendChild(keyboard.element);
+			keyboard.update();
 
-						//create lines
-						var positionEl = document.createElement('div');
-						positionEl.className = 'piano-game-position';
+			// make sound
+			keyboard.on('noteOn', function (_ref) {
+				var which = _ref.which;
+				var value = _ref.value;
+				var target = _ref.target;
 
-						var pos = _pianoKey2['default'].getOctave(self.range[0]);
+				self.highlightNote(which);
 
-						for (var i = self.range[1]; i >= self.range[0]; i--) {
-								//ignore black keys
-								if (_pianoKey2['default'].isBlack(i)) continue;
-
-								var posEl = positionEl.cloneNode();
-								posEl.setAttribute('data-position', i);
-
-								if (!(pos++ % 2)) {
-										posEl.classList.add('piano-game-position-space');
-								} else {
-										if (i === 40 || i > 57 || i < 23) {
-												posEl.classList.add('piano-game-position-ledger');
-												posEl.setAttribute('data-ledger', true);
-										} else {
-												posEl.classList.add('piano-game-position-line');
-										}
-								}
-
-								posEl.setAttribute('data-position-sharp', i + 1);
-								posEl.setAttribute('data-position-flat', i - 1);
-
-								self.staveElement.appendChild(posEl);
-						}
-
-						self.element.appendChild(el);
-
-						return el;
+				if (!self.checkAnswer(keyboard.activeNotes)) {
+					target.classList.add('piano-keyboard-key-wrong');
+				} else {
+					target.classList.add('piano-keyboard-key-right');
+					self.indicateCorrectAnswer(function () {
+						self.clearNotes();
+						self.question = self.generateQuestion();
+						self.showQuestion(self.question);
+					});
 				}
+			});
 
-				/**
-     * Create keyboard based off options
-     *
-     * @param {[type]} options [description]
-     *
-     * @return {[type]} [description]
-     */
-		}, {
-				key: 'createKeyboard',
-				value: function createKeyboard(options) {
-						var self = this;
+			keyboard.on('noteOff', function (_ref2) {
+				var which = _ref2.which;
+				var value = _ref2.value;
+				var target = _ref2.target;
 
-						// create element
-						var el = document.createElement('div');
-						el.className = 'piano-game-keyboard';
+				self.unhighlightNote(which);
 
-						// get options
-						options = (0, _xtendMutable2['default'])({
-								range: ['c3', 'c6'],
-								element: el
-						}, options);
+				self.checkAnswer(keyboard.activeNotes);
+			});
 
-						var keyboard = new _pianoKeyboard2['default'](options);
+			//pipe qwerty keys to piano
+			(0, _midiQwertyKeys2['default'])({
+				mode: 'piano',
+				offset: keyboard.range[0]
+			}).pipe(keyboard);
 
-						//insert element
-						self.element.appendChild(keyboard.element);
-						keyboard.update();
+			//TODO: make piano accept MIDI-input
 
-						// make sound
-						keyboard.on('noteOn', function (_ref) {
-								var which = _ref.which;
-								var value = _ref.value;
-								var target = _ref.target;
+			return keyboard;
+		}
 
-								self.highlightNote(which);
+		/**
+   * Test passed notes on correctness to the question
+   */
+	}, {
+		key: 'checkAnswer',
+		value: function checkAnswer(notes) {
+			var self = this;
 
-								if (!self.checkAnswer(keyboard.activeNotes)) {
-										target.classList.add('piano-keyboard-key-wrong');
-								} else {
-										target.classList.add('piano-keyboard-key-right');
-										self.indicateCorrectAnswer(function () {
-												self.clearNotes();
-												self.question = self.generateQuestion();
-												self.showQuestion(self.question);
-										});
-								}
-						});
+			//check by octaves
+			var answerNotes = [].concat(_toConsumableArray(notes)).map(_pianoKey2['default'].getNote);
+			var questionNotes = [].concat(_toConsumableArray(self.question.notes)).map(_pianoKey2['default'].getNote);
 
-						keyboard.on('noteOff', function (_ref2) {
-								var which = _ref2.which;
-								var value = _ref2.value;
-								var target = _ref2.target;
+			if ((0, _sameMembers2['default'])(answerNotes, questionNotes)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 
-								self.unhighlightNote(which);
+		/**
+   * Schedule indication of a question
+   */
+	}, {
+		key: 'showQuestion',
+		value: function showQuestion(question) {
+			var self = this;
 
-								self.checkAnswer(keyboard.activeNotes);
-						});
+			self.clearAnswerIndication();
 
-						//pipe qwerty keys to piano
-						(0, _midiQwertyKeys2['default'])({
-								mode: 'piano',
-								offset: keyboard.range[0]
-						}).pipe(keyboard);
+			//TODO: generate proper chords
+			self.showNotes(question.notes);
 
-						//TODO: make piano accept MIDI-input
+			return self;
+		}
 
-						return keyboard;
+		/**
+   * Expose note[s] on a stave
+   */
+	}, {
+		key: 'showNotes',
+		value: function showNotes(notes) {
+			var self = this;
+
+			var note = notes[0];
+
+			var noteElement = document.createElement('div');
+			noteElement.className = 'piano-game-note';
+			noteElement.setAttribute('data-note', note);
+
+			var isSharp = false;
+			var notePosition = self.stave.querySelector('[data-position="' + note + '"]');
+
+			//if no space found for an element - sharpen it
+			if (!notePosition) {
+				isSharp = true;
+				notePosition = self.stave.querySelector('[data-position-sharp="' + note + '"]');
+				noteElement.setAttribute('data-sharp', true);
+				noteElement.classList.add('piano-game-note-sharp');
+			}
+			notePosition.appendChild(noteElement);
+
+			//hide all ledger lines
+			[].concat(_toConsumableArray(self.stave.querySelectorAll('[data-ledger]'))).forEach(function (ledger) {
+				ledger.classList.remove('piano-game-position-ledger-visible');
+			});
+
+			//show ledger lines
+			if (note > 57) {
+				for (var i = 50; i <= note + (isSharp ? 1 : 0); i++) {
+					var ledger = self.stave.querySelector('[data-ledger][data-position="' + i + '"]');
+					if (ledger) ledger.classList.add('piano-game-position-ledger-visible');
 				}
-
-				/**
-     * Test passed notes on correctness to the question
-     */
-		}, {
-				key: 'checkAnswer',
-				value: function checkAnswer(notes) {
-						var self = this;
-
-						//check by octaves
-						var answerNotes = [].concat(_toConsumableArray(notes)).map(_pianoKey2['default'].getNote);
-						var questionNotes = [].concat(_toConsumableArray(self.question.notes)).map(_pianoKey2['default'].getNote);
-
-						if ((0, _sameMembers2['default'])(answerNotes, questionNotes)) {
-								return true;
-						} else {
-								return false;
-						}
+			} else if (note <= 23) {
+				for (var i = 28; i >= note - (isSharp ? 1 : 0); i--) {
+					var ledger = self.stave.querySelector('[data-ledger][data-position="' + i + '"]');
+					if (ledger) ledger.classList.add('piano-game-position-ledger-visible');
 				}
+			} else if (note === 40 || note === 41) {
+				self.stave.querySelector('[data-position="40"]').classList.add('piano-game-position-ledger-visible');
+			}
 
-				/**
-     * Schedule indication of a question
-     */
-		}, {
-				key: 'showQuestion',
-				value: function showQuestion(question) {
-						var self = this;
+			return self;
+		}
 
-						self.clearAnswerIndication();
+		/**
+   * Remove all notes from stave
+   */
+	}, {
+		key: 'clearNotes',
+		value: function clearNotes() {
+			var self = this;
 
-						//TODO: generate proper chords
-						self.showNotes(question.notes);
+			var notes = [].concat(_toConsumableArray(self.stave.querySelectorAll('[data-note]'))).forEach(function (note) {
+				note.parentNode.removeChild(note);
+			});
 
-						return self;
-				}
+			//remove classes from the keyboard keys
+			self.keyboard.noteElements.forEach(function (el) {
+				el.classList.remove('piano-keyboard-key-right');
+				el.classList.remove('piano-keyboard-key-wrong');
+			});
 
-				/**
-     * Expose note[s] on a stave
-     */
-		}, {
-				key: 'showNotes',
-				value: function showNotes(notes) {
-						var self = this;
+			return self;
+		}
 
-						var note = notes[0];
+		/**
+   * Show visually proper answer, invoke callback after delay
+   */
+	}, {
+		key: 'indicateCorrectAnswer',
+		value: function indicateCorrectAnswer(callback) {
+			var self = this;
 
-						var noteElement = document.createElement('div');
-						noteElement.className = 'piano-game-note';
-						noteElement.setAttribute('data-note', note);
+			self.stave.querySelector('[data-note]').classList.add('piano-game-note-right');
 
-						var isSharp = false;
-						var notePosition = self.stave.querySelector('[data-position="' + note + '"]');
+			setTimeout(function () {
+				callback.call(self);
+			}, 1000);
 
-						//if no space found for an element - sharpen it
-						if (!notePosition) {
-								isSharp = true;
-								notePosition = self.stave.querySelector('[data-position-sharp="' + note + '"]');
-								noteElement.setAttribute('data-sharp', true);
-								noteElement.classList.add('piano-game-note-sharp');
-						}
-						notePosition.appendChild(noteElement);
+			return self;
+		}
 
-						//hide all ledger lines
-						[].concat(_toConsumableArray(self.stave.querySelectorAll('[data-ledger]'))).forEach(function (ledger) {
-								ledger.classList.remove('piano-game-position-ledger-visible');
-						});
+		/**
+   * Show answer no more
+   */
+	}, {
+		key: 'clearAnswerIndication',
+		value: function clearAnswerIndication() {
+			var self = this;
 
-						//show ledger lines
-						if (note > 57) {
-								for (var i = 50; i <= note + (isSharp ? 1 : 0); i++) {
-										var ledger = self.stave.querySelector('[data-ledger][data-position="' + i + '"]');
-										if (ledger) ledger.classList.add('piano-game-position-ledger-visible');
-								}
-						} else if (note <= 23) {
-								for (var i = 28; i >= note - (isSharp ? 1 : 0); i--) {
-										var ledger = self.stave.querySelector('[data-ledger][data-position="' + i + '"]');
-										if (ledger) ledger.classList.add('piano-game-position-ledger-visible');
-								}
-						} else if (note === 40 || note === 41) {
-								self.stave.querySelector('[data-position="40"]').classList.add('piano-game-position-ledger-visible');
-						}
+			//TODO
 
-						return self;
-				}
+			return self;
+		}
 
-				/**
-     * Remove all notes from stave
-     */
-		}, {
-				key: 'clearNotes',
-				value: function clearNotes() {
-						var self = this;
+		/**
+   * Generate a new question object
+   */
+	}, {
+		key: 'generateQuestion',
+		value: function generateQuestion() {
+			var self = this;
 
-						var notes = [].concat(_toConsumableArray(self.stave.querySelectorAll('[data-note]'))).forEach(function (note) {
-								note.parentNode.removeChild(note);
-						});
+			var question = {};
 
-						//remove classes from the keyboard keys
-						self.keyboard.noteElements.forEach(function (el) {
-								el.classList.remove('piano-keyboard-key-right');
-								el.classList.remove('piano-keyboard-key-wrong');
-						});
+			question.notes = self.generateNotes(Math.ceil(Math.random() * self.maxNotes), self.range);
 
-						return self;
-				}
+			//FIXME: what else to add to the question?
 
-				/**
-     * Show visually proper answer, invoke callback after delay
-     */
-		}, {
-				key: 'indicateCorrectAnswer',
-				value: function indicateCorrectAnswer(callback) {
-						var self = this;
+			return question;
+		}
 
-						self.stave.querySelector('[data-note]').classList.add('piano-game-note-right');
+		/**
+   * Generate @number random notes within the @range
+   */
+	}, {
+		key: 'generateNotes',
+		value: function generateNotes(number, range) {
+			var self = this;
 
-						setTimeout(function () {
-								callback.call(self);
-						}, 1000);
+			var res = [];
 
-						return self;
-				}
+			for (var i = 0; i < number; i++) {
+				res.push(self._random());
+			}
 
-				/**
-     * Show answer no more
-     */
-		}, {
-				key: 'clearAnswerIndication',
-				value: function clearAnswerIndication() {
-						var self = this;
+			return res;
+		}
 
-						//TODO
+		/**
+   * Highlight specific note on a staff
+   */
+	}, {
+		key: 'highlightNote',
+		value: function highlightNote(note) {
+			var self = this;
 
-						return self;
-				}
+			// var highlightedNote = self.noteElement.cloneNode(true);
+			// highlightedNote.setAttribute('data-note', note);
+			// highlightedNote.classList.add('piano-game-note-active');
 
-				/**
-     * Generate a new question object
-     */
-		}, {
-				key: 'generateQuestion',
-				value: function generateQuestion() {
-						var self = this;
+			// self.stave.querySelector(`[data-position="${note}"]`).appendChild(highlightedNote);
 
-						var question = {};
+			return self;
+		}
 
-						question.notes = self.generateNotes(Math.ceil(Math.random() * self.maxNotes), self.range);
+		/**
+   * Clear highlight of a note on a staff
+   */
+	}, {
+		key: 'unhighlightNote',
+		value: function unhighlightNote(note) {
+			var self = this;
 
-						//FIXME: what else to add to the question?
+			// var noteEl = self.stave.querySelector(`[data-note="${note}"]`);
 
-						return question;
-				}
+			// if (noteEl) {
+			// 	noteEl.parentNode.removeChild(noteEl);
+			// }
 
-				/**
-     * Generate @number random notes within the @range
-     */
-		}, {
-				key: 'generateNotes',
-				value: function generateNotes(number, range) {
-						var self = this;
+			return self;
+		}
 
-						var res = [];
+		/**
+   * Start game
+   */
+	}, {
+		key: 'start',
+		value: function start() {
+			var self = this;
 
-						var random = (0, _uniqueRandom2['default'])(range[0], range[1]);
+			return self;
+		}
 
-						for (var i = 0; i < number; i++) {
-								res.push(random());
-						}
+		/**
+   * Update appearance: sizes etc
+   */
+	}, {
+		key: 'update',
+		value: function update() {
+			var self = this;
 
-						return res;
-				}
+			self.keyboard.update();
+		}
+	}]);
 
-				/**
-     * Highlight specific note on a staff
-     */
-		}, {
-				key: 'highlightNote',
-				value: function highlightNote(note) {
-						var self = this;
-
-						// var highlightedNote = self.noteElement.cloneNode(true);
-						// highlightedNote.setAttribute('data-note', note);
-						// highlightedNote.classList.add('piano-game-note-active');
-
-						// self.stave.querySelector(`[data-position="${note}"]`).appendChild(highlightedNote);
-
-						return self;
-				}
-
-				/**
-     * Clear highlight of a note on a staff
-     */
-		}, {
-				key: 'unhighlightNote',
-				value: function unhighlightNote(note) {
-						var self = this;
-
-						// var noteEl = self.stave.querySelector(`[data-note="${note}"]`);
-
-						// if (noteEl) {
-						// 	noteEl.parentNode.removeChild(noteEl);
-						// }
-
-						return self;
-				}
-
-				/**
-     * Start game
-     */
-		}, {
-				key: 'start',
-				value: function start() {
-						var self = this;
-
-						return self;
-				}
-
-				/**
-     * Update appearance: sizes etc
-     */
-		}, {
-				key: 'update',
-				value: function update() {
-						var self = this;
-
-						self.keyboard.update();
-				}
-		}]);
-
-		return Game;
+	return Game;
 })(_events2['default']);
 
 Game.prototype.requireOctave = false;
@@ -11470,4 +11363,109 @@ Game.prototype.range = [_pianoKey2['default'].getNumber('a1'), _pianoKey2['defau
 exports['default'] = Game;
 module.exports = exports['default'];
 
-},{"audio-context":2,"babelify/polyfill":187,"events":193,"midi-qwerty-keys":212,"piano-key":216,"piano-keyboard":219,"same-members":246,"unique-random":247,"xtend/mutable":248}]},{},[]);
+},{"audio-context":2,"babelify/polyfill":187,"events":193,"midi-qwerty-keys":212,"piano-key":"piano-key","piano-keyboard":218,"same-members":245,"unique-random":246,"xtend/mutable":247}],"piano-key":[function(require,module,exports){
+/**
+ * List of frequencies for piano key
+ * @module  piano-key
+ */
+
+var loop = require('mumath/loop')
+
+
+/** Note frequencies dict */
+var key = {};
+
+
+/** Get name for a number */
+key.getName = function (number) {
+	return key.notes[loop(number - 4, 12)] + Math.round((number + 2) / 12);
+};
+
+
+/** Get frequency for a number */
+key.getFrequency = function (number) {
+	if (typeof number === 'string') {
+		number = key.getNumberFromName(number);
+	}
+
+	return Math.pow(2, (number - 49) / 12) * 440;
+};
+
+
+/** Get number for a name */
+key.getNumber = function (frequency) {
+	if (typeof frequency === 'string') {
+		return key.getNumberFromName(frequency);
+	}
+
+	return 12 * Math.log(frequency / 440) / Math.log(2) + 49;
+};
+
+
+/** Get note number from note name */
+key.getNumberFromName = function (name) {
+	var note = key.getNote(name);
+
+	//default octave is 0
+	var octave = key.getOctave(name);
+
+	var noteIdx = key.notes.indexOf(note);
+
+	if (noteIdx < 0) {
+		throw Error('Unknown note ' + name);
+	}
+
+	var noteNumber = (octave - 1) * 12 + noteIdx + 4;
+
+	return noteNumber;
+};
+
+
+/** Test whether key number passed is black */
+key.isBlack = function (name) {
+	if (typeof name === 'number') {
+		name = key.getName(name);
+	}
+
+	return /#/.test(name);
+};
+
+
+/** Return key octave by key number */
+key.getOctave = function (name) {
+	if (typeof name === 'number') {
+		name = key.getName(name);
+	}
+
+	var octave = /-?[0-9.]+/.exec(name);
+
+	//let default octave be 0
+	if (octave.length) {
+		return parseFloat(octave[0]);
+	}
+	else {
+		return 0;
+	}
+};
+
+
+/** Return note name from number/name */
+key.getNote = function (name) {
+	if (typeof name === 'number') {
+		name = key.getName(name);
+	}
+
+	var note = /[a-z#]+/i.exec(name);
+
+	note = (note.length ? note[0] : 'A').toUpperCase();
+
+	return note;
+};
+
+
+/** List of note names */
+key.notes = 'C C# D D# E F F# G G# A A# B'.split(' ');
+
+
+module.exports = key;
+},{"mumath/loop":216}]},{},[]);
