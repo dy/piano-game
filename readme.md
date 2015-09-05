@@ -18,3 +18,8 @@ var game = new PianoGame({
 	requireOctave: false //require exact octave for a note
 });
 ```
+
+# Similar
+
+* [musictheory.net](http://www.musictheory.net/exercises/keyboard-reverse)
+* [piano-trainer](https://github.com/philippotto/Piano-Trainer)

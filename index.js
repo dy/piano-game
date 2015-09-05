@@ -36,8 +36,8 @@ class Game extends Emitter {
 		//create kbd
 		self.keyboard = self.createKeyboard(options.keyboard);
 
-		//reassign own range, cause piano casts it to numbers
-		// self.range = self.range.map(key.getNumber);
+		//hook up unique random fn
+		self._random = uniqRandom(self.range[0], self.range[1]);
 
 		//ask the first question
 		self.question = self.generateQuestion();
@@ -122,7 +122,7 @@ class Game extends Emitter {
 
 		// get options
 		options = extend({
-			range: ['c3', 'c6'],
+			range: ['c4', 'c7'],
 			element: el
 		}, options);
 
@@ -327,10 +327,8 @@ class Game extends Emitter {
 
 		var res = [];
 
-		var random = uniqRandom(range[0], range[1]);
-
 		for (var i = 0; i < number; i++) {
-			res.push( random() );
+			res.push( self._random() );
 		}
 
 		return res;

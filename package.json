@@ -4,8 +4,8 @@
   "description": "Become a better pianist",
   "main": "index.js",
   "scripts": {
-    "watch": "watchify -r ./index.js:piano-game -d -o ./test/bundle.js",
-    "build": "browserify -r ./index.js:piano-game -o ./test/bundle.js",
+    "watch": "watchify -r piano-key -r ./index.js:piano-game -d -o ./test/bundle.js",
+    "build": "browserify -r piano-key -r ./index.js:piano-game -o ./test/bundle.js",
     "css": "postcss -u postcss-import -u autoprefixer ./index.css > test/bundle.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,6 +31,7 @@
   "homepage": "https://github.com/dfcreative/piano-game",
   "dependencies": {
     "array-same": "^1.0.0",
+    "audio-buffer-utils": "^0.1.0",
     "audio-context": "^0.1.0",
     "midi-qwerty-keys": "0.0.2",
     "piano-key": "^2.1.0",

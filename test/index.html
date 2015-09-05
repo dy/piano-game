@@ -2,7 +2,7 @@
 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, minimal-ui">
 <meta name="description" content="Piano game">
 <meta name="keyword" content="Piano, game">
 <meta name="author" content="Deema Yvanow" />
@@ -27,7 +27,6 @@
 		position: relative;
 		margin: 0;
 		height: 100%;
-		min-height: 480px;
 	}
 
 	.piano-game {
@@ -62,24 +61,84 @@
 
 <script src="bundle.js"></script>
 <script type="text/javascript">
-window.addEventListener("load",function() {
-	setTimeout(function(){
-	window.scrollTo(0, 0);
-	}, 0);
-});
-
 var Game = require('piano-game');
+var key = require('piano-key');
 
 // create a new game
 var game = new Game({
 	element: document.querySelector('.piano-game')
 });
 
+
 // start game
 var startButton = document.querySelector('.start-button');
 startButton.addEventListener('click', function c() {
 	startButton.removeEventListener('click', c);
 	startButton.parentNode.removeChild(startButton);
+
+	//create piano note source
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', './grand.mp3', true);
+	xhr.responseType = 'arraybuffer';
+	xhr.onload = function () {
+		game.context.decodeAudioData(xhr.response,
+		function onSuccess (buffer) {
+			if (!buffer) {
+				alert('Error decoding file data.');
+				return;
+			}
+			createPiano(buffer);
+		},
+		function onError (e) {
+			alert('Error decoding file data.');
+			throw e;
+		});
+	};
+	xhr.onerror = function (e) {
+	    alert ('Error loading request');
+	    throw e;
+	};
+	xhr.send();
+
+	//start game
 	game.start();
 }, false);
+
+
+
+
+
+//create stack of buffers for piano octave, from a single sample
+function createPiano (buffer) {
+	//bind piano keys to key sounds
+	game.keyboard.on('noteOn', function (e) {
+		var which = e.which;
+
+		var source = game.context.createBufferSource();
+		source.buffer = buffer;
+
+		//basic sample is 440hz
+		//change playback rate to accord to note number
+		source.playbackRate.value = key.getFrequency(which) / 440;
+
+		var gain = game.context.createGain();
+		gain.gain.value = e.value / 127 - Math.random() * 0.3;
+
+		var filter = game.context.createBiquadFilter();
+		filter.frequency.value = Math.max((e.value * Math.random() + 127) * 50, 400);
+		filter.Q.value = 1 * Math.random();
+		filter.type = 'lowpass';
+
+		source.connect(filter);
+		filter.connect(gain);
+		gain.connect(game.context.destination);
+
+		try {
+		source.start(0);
+
+		} catch (e) {
+			alert(e)
+		}
+	});
+}
 </script>
