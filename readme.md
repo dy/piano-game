@@ -1,6 +1,6 @@
 [The Piano Game](https://audio-lab.github.io/piano-game).
 
-Become a better pianist.
+Guess notes from stave.
 
 
 [![npm install piano-game](https://nodei.co/npm/piano-game.png?mini=true)](https://nodei.co/npm/piano-game/)
