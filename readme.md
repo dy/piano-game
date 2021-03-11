@@ -1,4 +1,4 @@
-[The Piano Game](https://dfcreative.github.io/piano-game).
+[The Piano Game](https://audio-lab.github.io/piano-game).
 
 Become a better pianist.
 
